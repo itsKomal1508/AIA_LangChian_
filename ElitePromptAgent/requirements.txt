@@ -5,3 +5,6 @@ langchain-groq
 gspread
 google-auth
 google-auth-oauthlib
+groq
+openai
+oauth2client
