@@ -1,21 +1,23 @@
+import streamlit as st
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2.service_account import Credentials
 from datetime import datetime
+
 
 def save_to_sheet(user_input, output):
     try:
-        print("Connecting...")
-
         scope = [
-            "https://spreadsheets.google.com/feeds",
+            "https://www.googleapis.com/auth/spreadsheets",
             "https://www.googleapis.com/auth/drive"
         ]
 
-        creds = ServiceAccountCredentials.from_json_keyfile_name(
-            "credentials.json", scope
+        # Load credentials from Streamlit Secrets
+        credentials = Credentials.from_service_account_info(
+            st.secrets["gcp_service_account"],
+            scopes=scope
         )
 
-        client = gspread.authorize(creds)
+        client = gspread.authorize(credentials)
 
         sheet = client.open("AgentLogs").sheet1
 
@@ -23,11 +25,8 @@ def save_to_sheet(user_input, output):
 
         sheet.append_row([timestamp, user_input, output])
 
-        print("✅ Row added successfully!")
+        return True
 
     except Exception as e:
-        print("❌ Error saving to Google Sheet:", e)
-
-
-if __name__ == "__main__":
-    save_to_sheet("Test Input", "Test Output")
+        print("Error saving to Google Sheet:", e)
+        return False
