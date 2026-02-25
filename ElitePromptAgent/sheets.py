@@ -1,9 +1,3 @@
-import streamlit as st
-import gspread
-from google.oauth2.service_account import Credentials
-from datetime import datetime
-
-
 def save_to_sheet(user_input, output):
     try:
         scope = [
@@ -11,7 +5,6 @@ def save_to_sheet(user_input, output):
             "https://www.googleapis.com/auth/drive"
         ]
 
-        # Load credentials from Streamlit Secrets
         credentials = Credentials.from_service_account_info(
             st.secrets["gcp_service_account"],
             scopes=scope
@@ -28,5 +21,5 @@ def save_to_sheet(user_input, output):
         return True
 
     except Exception as e:
-        print("Error saving to Google Sheet:", e)
+        st.error(f"Google Sheets Error: {e}")
         return False
