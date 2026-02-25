@@ -1,23 +1,20 @@
+import streamlit as st
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2.service_account import Credentials
 
 def save_to_sheet(user_input, result):
-    try:
-        scope = [
-            "https://spreadsheets.google.com/feeds",
-            "https://www.googleapis.com/auth/drive"
-        ]
 
-        creds = ServiceAccountCredentials.from_json_keyfile_name(
-            "credentials.json",
-            scope
-        )
+    scope = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
 
-        client = gspread.authorize(creds)
+    creds = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes=scope
+    )
 
-        sheet = client.open("AgentLogs").sheet1
+    client = gspread.authorize(creds)
 
-        sheet.append_row([user_input, result])
-
-    except Exception as e:
-        raise Exception(f"Google Sheets Error: {e}")
+    sheet = client.open("AgentLogs").sheet1
+    sheet.append_row([user_input, result])

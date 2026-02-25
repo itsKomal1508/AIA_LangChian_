@@ -7,6 +7,8 @@ load_dotenv()
 
 groq_api_key = os.getenv("GROQ_API_KEY")
 
+
+
 # Initialize Groq model
 llm = ChatGroq(
     model_name=os.getenv("GROQ_MODEL"),
